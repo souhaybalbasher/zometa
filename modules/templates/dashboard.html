@@ -1,0 +1,286 @@
+{% extends 'mainPage.html' %} {% block pageContent %}
+<h1 class="greeting">Welcome @{{ name }}!</h1>
+<div class="blop">
+  <form
+    action="{{ url_for('dashboard') }}"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    {{blop.csrf_token}}
+    <div style="display: flex">
+      <button
+        onclick="document.getElementById('id01').style.display='block'"
+        class="image_upload"
+      >
+        <img
+          src="{{ url_for('static', filename='Images/SVG/image.svg') }}"
+          class="filter_white"
+          alt=""
+        />
+      </button>
+      <p style="opacity: 0.5; font-size: 12px; font-style: italic">
+        Upload Image
+      </p>
+      <div id="id01" class="w3-modal" style="display: none">
+        <div
+          class="w3-modal-content upload_window"
+          style="padding: 30px; background-color: rgb(146, 30, 255)"
+        >
+          <div class="w3-container" style="background-color: rgb(146, 30, 255)">
+            <img
+              src="{{ url_for('static', filename='Images/SVG/zometa.svg') }}"
+              alt=""
+              style="width: 50px; height: auto; margin-bottom: 20px"
+            />
+            <p>
+              Upload an image from your device. After doing that, close this
+              modal and click Blop
+            </p>
+            <div class="form-group files">{{blop.blop_img}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{blop.blop(class='blop_pannel',placeholder="What's on your mind?")}}
+    {{blop.submit(class='submit_blop')}}
+  </form>
+</div>
+
+<div class="timeline">
+  {% for row in timeline.items %} {% if row.post_id != None %}
+
+  <div class="blop">
+    <div class="userBlop">
+      <div class="meta_blop">
+        <img
+          class="thumbnail"
+          src="{{ url_for('static', filename='Images/Users/profile_pics/' + row.from_post.author.image_file) }}"
+          alt=""
+        />
+        <div>
+          <h4 style="margin-bottom: 0px">
+            <a
+              class="username"
+              href="{{ url_for('viewProfile',account_id=row.from_post.author.id) }}"
+            >
+              @{{ row.from_post.author.username }}</a
+            >
+          </h4>
+          <p style="font-size: 12px; margin-top: 5px">
+            <span style="font-weight: bold; color: rgb(146, 30, 255)"
+              >Posted on
+            </span>
+            {{ row.from_post.stamp }}
+          </p>
+        </div>
+      </div>
+      <p style="margin-top: 20px">{{ row.from_post.blop }}</p>
+      {% if row.from_post.post_img %}
+      <img
+        onclick="document.getElementById('modal_image_blop').style.display='block'"
+        src="{{ url_for('static', filename='Images/Blops/' + row.from_post.post_img) }}"
+        class="blop_image"
+        alt=""
+      />
+      <div
+        id="modal_image_blop"
+        class="w3-modal"
+        onclick="this.style.display='none'"
+      >
+        <span class="w3-button w3-hover-red w3-xlarge w3-display-topright"
+          >&times;</span
+        >
+        <div class="w3-modal-content w3-animate-zoom">
+          <img
+            src="{{ url_for('static', filename='Images/Blops/' + row.from_post.post_img) }}"
+            style="width: 100%"
+          />
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    <a href="{{ url_for('save_post',post_id=row.from_post.id) }}">
+      <img
+        src="{{ url_for('static', filename='Images/SVG/bookmark.svg') }}"
+        id="imgplus"
+        onclick="chngimg()"
+        class="filter_white"
+        alt=""
+      />
+    </a>
+    <a href="{{ url_for('share',post_id=row.from_post.id) }}">
+      <img
+        src="{{ url_for('static', filename='Images/SVG/share.svg') }}"
+        class="filter_white"
+        alt=""
+      />
+    </a>
+    <a href="{{ url_for('delete',post_id=row.from_post.id) }}">
+      <img
+        src="{{ url_for('static', filename='Images/SVG/delete.svg') }}"
+        class="filter_white"
+        alt=""
+      />
+    </a>
+  </div>
+
+  {% else %}
+
+  <div class="blop">
+    <div class="userBlop">
+      <div class="meta_blop">
+        <img
+          src="{{ url_for('static', filename='Images/Users/profile_pics/' + row.from_share.sharer.image_file) }}"
+          style="
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+            margin-top: 20px;
+          "
+          alt=""
+        />
+        <div>
+          <h3 style="margin-bottom: 0px">
+            <a
+              class="username"
+              href="{{ url_for('viewProfile',account_id=row.from_share.sharer.id) }}"
+            >
+              @{{ row.from_share.sharer.username }}</a
+            >
+          </h3>
+          <p style="font-size: 12px; margin-top: 5px">
+            <span style="font-weight: bold; color: rgb(146, 30, 255)"
+              >Posted on
+            </span>
+            {{ row.from_share.share_stamp }}
+          </p>
+        </div>
+      </div>
+      <p style="margin-top: 5px">{{ row.from_share.share_text }}</p>
+
+      <div class="share_post">
+        {% if row.from_share.ori_post %}
+        <div class="userBlop">
+          <div class="meta_blop">
+            <img
+              class="thumbnail"
+              src="{{ url_for('static', filename='Images/Users/profile_pics/' + row.from_share.ori_post.author.image_file) }}"
+              alt=""
+            />
+            <div>
+              <div style="display: flex">
+                <h3 style="margin-bottom: 0px">
+                  <a
+                    class="username"
+                    href="{{ url_for('viewProfile',account_id=row.from_share.ori_post.author.id) }}"
+                  >
+                    @{{ row.from_share.ori_post.author.username }}</a
+                  >
+                </h3>
+                <a
+                  href="{{ url_for('share',post_id=row.from_share.ori_post.id) }}"
+                >
+                  <img
+                    src="{{ url_for('static', filename='Images/SVG/share.svg') }}"
+                    style="margin: 20px 30px 0px 30px"
+                    class="filter_white"
+                    alt=""
+                  />
+                </a>
+                <a
+                  href="{{ url_for('save_post',post_id=row.from_share.ori_post.id) }}"
+                >
+                  <img
+                    src="{{ url_for('static', filename='Images/SVG/bookmark.svg') }}"
+                    style="margin: 20px 30px 0px 0px"
+                    class="filter_white"
+                    alt=""
+                  />
+                </a>
+              </div>
+              <p style="font-size: 12px; margin-top: 5px">
+                <span style="font-weight: bold; color: rgb(146, 30, 255)"
+                  >Posted on
+                </span>
+                {{ row.from_share.ori_post.stamp }}
+              </p>
+            </div>
+          </div>
+          <p style="margin-top: 5px">{{ row.from_share.ori_post.blop }}</p>
+          {% if row.from_share.ori_post.post_img %}
+          <img
+            onclick="document.getElementById('modal_image_share').style.display='block'"
+            src="{{ url_for('static', filename='Images/Blops/' + row.from_share.ori_post.post_img) }}"
+            class="blop_image"
+            alt=""
+          />
+          <div
+            id="modal_image_share"
+            class="w3-modal"
+            onclick="this.style.display='none'"
+          >
+            <span class="w3-button w3-hover-red w3-xlarge w3-display-topright"
+              >&times;</span
+            >
+            <div class="w3-modal-content w3-animate-zoom">
+              <img
+                src="{{ url_for('static', filename='Images/Blops/' + row.from_share.ori_post.post_img) }}"
+                style="width: 100%"
+              />
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        {% else %}
+        <p style="font-style: italic; opacity: 0.5">
+          This blop was deleted by it's original author
+        </p>
+        {% endif %}
+      </div>
+    </div>
+    <a href="{{ url_for('save_post',post_id=row.from_share.id) }}">
+      <img
+        src="{{ url_for('static', filename='Images/SVG/bookmark.svg') }}"
+        id="imgplus"
+        onclick="chngimg()"
+        class="filter_white"
+        alt=""
+      />
+    </a>
+    <a href="{{ url_for('share',post_id=row.from_share.id) }}">
+      <img
+        src="{{ url_for('static', filename='Images/SVG/share.svg') }}"
+        class="filter_white"
+        alt=""
+      />
+    </a>
+    <a href="{{ url_for('delete_share',post_id=row.from_share.id) }}">
+      <img
+        src="{{ url_for('static', filename='Images/SVG/delete.svg') }}"
+        class="filter_white"
+        alt=""
+      />
+    </a>
+
+    <br />
+  </div>
+
+  {% endif %} {% endfor %}
+
+  <div class="pagination">
+    {% for page_num in
+    timeline.iter_pages(left_edge=2,right_edge=2,left_current=1,right_current=2)
+    %} {% if page_num %} {% if timeline.page == page_num %}
+    <a class="active_page" href="{{ url_for('dashboard',page=page_num) }}"
+      >{{ page_num }}</a
+    >
+    {% else %}
+    <a class="pages" href="{{ url_for('dashboard',page=page_num) }}"
+      >{{ page_num }}</a
+    >
+    {% endif %} {% else %} ... {% endif %} {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

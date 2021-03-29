@@ -1,0 +1,25 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    background-color: rgba(140, 80, 209);
+    color: whitesmoke;
+    font-weight: bold;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
+}
+a {
+    text-decoration: none;
+    color: aquamarine;
+}
+.container {
+    width: 50%;
+    margin: auto;
+    margin-top: 15%;
+    background-color: rgb(43, 27, 54);
+    padding:30px;
+    border-radius: 20px;
+    text-align: center;
+}
+.zometa {
+    width: 100px;
+    height: auto;
+}

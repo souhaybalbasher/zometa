@@ -1,0 +1,34 @@
+{% extends 'mainPage.html' %}
+
+{% block pageContent %}
+
+    <div class="alert">
+        <h3>share this post?</h3>
+    </div>
+
+    <div class="sample">
+        <div class="userBlop">
+            <div class="meta_blop">
+                <img src="{{ url_for('static', filename='Images/Users/profile_pics/' + post.author.image_file) }}" style="width:50px; height: 50px; border-radius: 50%; margin-right: 10px; margin-top: 20px;" alt="">
+                <div>
+                    <h3 style="margin-bottom: 0px;">@{{ post.author.username }}</h3>
+                    <p style="font-size: 12px;"><span style="font-weight: bold; color: rgb(146, 30, 255);">Posted on </span>{{ post.stamp }}</p>
+                </div>
+            </div>
+            <p style="margin-top: 5px;">{{ post.blop }}</p>
+            {% if post.post_img %}
+                <img src="{{ url_for('static', filename='Images/Blops/'+post.post_img) }}" class="blop_image" alt="">
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="choice alert">
+        <form action="{{ url_for('share',post_id=post.id) }}" method="post">
+            {{ blop.csrf_token }}
+            <p>Add your own comment if you want.</p>
+            {{blop.blop(class='share_pannel')}}
+            {{blop.submit(class='submit_blop',value='Share this post')}}
+        </form>
+    </div>
+
+{% endblock %}

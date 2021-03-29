@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zometa</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='Images/SVG/zometa.svg') }}"/>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'css/mainPage.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'css/blop.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'css/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'css/constant.css') }}">
+
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <ul>
+                <li><img src="{{ url_for('static', filename='Images/SVG/zometa.svg') }}" alt="" style="width: 50px; height: auto; margin-bottom: 30px;"></li>
+                <li><img src="{{ url_for('static', filename='Images/SVG/user.svg') }}" alt=""><a href="{{ url_for('account') }}">Profile</a></li>
+                <li><img src="{{ url_for('static', filename='Images/SVG/home.svg') }}" alt=""><a href="{{ url_for('dashboard') }}">Home</a></li>
+                <li><img src="{{ url_for('static', filename='Images/SVG/logout.svg') }}" alt=""><a href="{{ url_for('logout') }}">logout</a></li>
+                <li><img src="{{ url_for('static', filename='Images/SVG/saved_posts.svg') }}" alt=""><a href="{{ url_for('bookmarks') }}">Saved</a></li>
+            </ul>
+        </div>
+        <div class="posts">
+            {% block pageContent %}
+            {% endblock %}
+        </div>
+        <div class="info">
+            <div class="notice">
+                <h2 class="header">Hey there!</h1>
+                <p class="meta">It's good to see you back! Before you start bloping, make sure to keep the following point in mind.</p>
+                <p>Let's spread some hate. Please ensure that there will be blops which may hurt the sentiments of a person or a community.</p>
+                <p>That being said, don't hold back. Zometa was made to allow propogation of free speech. So start bloping away!</p>
+                <br>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                            {% for message in messages %}
+                            <div class="flash">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+
+
+    <script language="javascript" type="text/javascript">
+        function chngimg() {
+            var img = document.getElementById('imgplus').src;
+            if (img.indexOf("{{ url_for('static', filename='Images/SVG/bookmark.svg') }}")!=-1) {
+                document.getElementById('imgplus').src  = "{{ url_for('static', filename='Images/SVG/bookmark_save.svg') }}";
+            }
+             else {
+               document.getElementById('imgplus').src = "{{ url_for('static', filename='Images/SVG/bookmark.svg') }}";
+           }
+    
+        }
+        var modal = document.getElementById('id01');
+
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,142 @@
+{% extends 'mainPage.html' %}
+
+{% block pageContent %}
+<div style="position: relative;">
+    <img src="{{ background }}" alt="" class="bg_img">
+    <div class="profile">
+        <div class="profile_info">
+            <img src="{{ profile }}" alt="" class="profile_img">
+            <h2>@{{ current_user.username }}</h2>
+            <p class="light">{{ current_user.email }}</p>
+            {% if current_user.bio %}
+                <p style="margin-bottom: 2px;">{{ current_user.bio }}</p>
+            {% endif %}
+
+            <div style="display: flex; color: gray;">
+                <p><img src="https://www.flaticon.com/svg/static/icons/svg/3003/3003280.svg" style="width: 17px; height: auto; margin-right: 10px;" alt="">Joined on {{ current_user.date }}</p>
+                {% if current_user.bday %}
+                    <p><img src="https://www.flaticon.com/svg/static/icons/svg/3159/3159408.svg" style="width: 17px; height: auto; margin-right: 10px; margin-left: 20px;" alt="">Born {{ current_user.bday }}</p>
+                {% endif %}
+            </div>
+            <a class="deactivate" href="{{ url_for('deactivate_confirm') }}">Deactivate Account</a>
+            
+        </div>
+        <a href="{{ url_for('updateInfo') }}" class="edit_profile">Edit Profile</a>
+    </div>
+</div>
+
+<div class="timeline" style="margin-top:600px;">
+    <div class="seperator"></div>
+
+    {% for post in timeline.items %}
+
+        <div class="blop">
+            <div class="userBlop">
+                <div class="meta_blop">
+                    <img src="{{ url_for('static', filename='Images/Users/profile_pics/' + post.author.image_file) }}" style="width:50px; height: 50px; border-radius: 50%; margin-right: 10px; margin-top: 20px;" alt="">
+                    <div>
+                        <h3 style="margin-bottom: 0px;"><a class="username" href="{{ url_for('viewProfile',account_id=post.author.id) }}"> @{{ post.author.username }}</a></h3>
+                        <p style="font-size: 12px;"><span style="font-weight: bold; color: dodgerblue;">Posted on </span>{{ post.stamp }}</p>
+                    </div>
+                </div>
+                <p style="margin-top: 5px;">{{ post.blop }}</p>
+                {% if post.post_img %}
+                    <img onclick="document.getElementById('modal_image_blop').style.display='block'" src="{{ url_for('static', filename='Images/Blops/' + post.post_img) }}" class="blop_image" alt="">
+                    <div id="modal_image_blop" class="w3-modal" onclick="this.style.display='none'">
+                        <span class="w3-button w3-hover-red w3-xlarge w3-display-topright">&times;</span>
+                        <div class="w3-modal-content w3-animate-zoom">
+                            <img src="{{ url_for('static', filename='Images/Blops/' + post.post_img) }}" style="width:100%">
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <a href="{{ url_for('share',post_id=post.id) }}">
+                <img src="{{ url_for('static', filename='Images/SVG/share.svg') }}" class="filter_white" alt="">
+            </a>
+            <a href="{{ url_for('delete',post_id=post.id) }}">
+                <img src="{{ url_for('static', filename='Images/SVG/delete.svg') }}" class="filter_white" alt="">
+            </a>
+        </div>
+
+    {% endfor %}
+
+    {% for shares in shares %}
+
+        <div class="blop">
+            <div class="userBlop">
+                <div class="meta_blop">
+                    <img src="{{ url_for('static', filename='Images/Users/profile_pics/' + shares.sharer.image_file) }}" style="width:50px; height: 50px; border-radius: 50%; margin-right: 10px; margin-top: 20px;" alt="">
+                    <div>
+                        <h3 style="margin-bottom: 0px;"><a class="username" href="{{ url_for('viewProfile',account_id=shares.sharer.id) }}"> @{{ shares.sharer.username }}</a></h3>
+                        <p style="font-size: 12px;"><span style="font-weight: bold; color: rgb(154, 30, 255);">Posted on </span>{{ shares.share_stamp }}</p>
+                    </div>
+                </div>
+                <p style="margin-top: 5px;">{{ shares.share_text }}</p>
+
+                <div class="share_post">
+
+                    {% if shares.ori_post %}
+                        <div class="userBlop">
+                            <div class="meta_blop">
+                                <img src="{{ url_for('static', filename='Images/Users/profile_pics/' + shares.ori_post.author.image_file) }}" style="width:50px; height: 50px; border-radius: 50%; margin-right: 10px; margin-top: 20px;" alt="">
+                                <div>
+                                    <div style="display: flex;">
+                                        <h3 style="margin-bottom: 0px;"><a class="username" href="{{ url_for('viewProfile',account_id=shares.ori_post.author.id) }}"> @{{ shares.ori_post.author.username }}</a></h3>
+                                        <a href="{{ url_for('share',post_id=shares.ori_post.id) }}">
+                                            <img src="{{ url_for('static', filename='Images/SVG/share.svg') }}" style="margin: 20px 30px 0px 30px;" class="filter_white" alt="">
+                                        </a>
+                                    </div>
+                                    <p style="font-size: 12px;"><span style="font-weight: bold; color: rgb(173, 30, 255);">Posted on </span>{{ shares.ori_post.stamp }}}</p>
+                                </div>
+                            </div>
+                            <p style="margin-top: 5px;">{{ shares.ori_post.blop }}</p>
+                            {% if shares.ori_post.post_img %}
+                                <img onclick="document.getElementById('modal_image_share').style.display='block'" src="{{ url_for('static', filename='Images/Blops/' + shares.ori_post.post_img) }}" class="blop_image" alt="">
+                                <div id="modal_image_share" class="w3-modal" onclick="this.style.display='none'">
+                                    <span class="w3-button w3-hover-red w3-xlarge w3-display-topright">&times;</span>
+                                    <div class="w3-modal-content w3-animate-zoom">
+                                        <img src="{{ url_for('static', filename='Images/Blops/' + shares.ori_post.post_img) }}" style="width:100%">
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p style='font-style:italic; opacity:0.5'>This blop was deleted by it's original author</p>
+                    {% endif %}
+                </div>
+
+            </div>
+            <a href="{{ url_for('share',post_id=shares.id) }}">
+                <img src="{{ url_for('static', filename='Images/SVG/share.svg') }}" class="filter_white" alt="">
+            </a>
+            <a href="{{ url_for('delete_share',post_id=shares.id) }}">
+                <img src="{{ url_for('static', filename='Images/SVG/delete.svg') }}" class="filter_white" alt="">
+            </a>
+
+            <br>
+
+
+
+        </div>
+
+
+    {% endfor %}
+
+    <div class="pagination">
+        {% for page_num in timeline.iter_pages(left_edge=2,right_edge=2,left_current=1,right_current=2) %}
+            {% if page_num %}
+                {% if timeline.page == page_num %}
+                    <a class="active_page" href="{{ url_for('dashboard',page=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                    <a class='pages' href="{{ url_for('dashboard',page=page_num) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+    </div>
+
+
+</div>
+
+{% endblock %}
